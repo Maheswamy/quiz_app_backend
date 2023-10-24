@@ -18,6 +18,8 @@ const {
   questionValidation,
   questionIdValidation,
 } = require("./app/helpers/questionValidation");
+const quizCltr = require("./app/controllers/quizCltr");
+const { quizValidation } = require("./app/helpers/quizValidation");
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -51,11 +53,12 @@ app.get(
 );
 
 app.get(
-    "/api/questions/:questionId",
+  "/api/questions/:questionId",
   authenticateUser,
   authorizationUser(["admin", "user"]),
   checkSchema(questionIdValidation),
-  questionsCltr.readOne)
+  questionsCltr.readOne
+);
 
 app.post(
   "/api/questions",
@@ -66,12 +69,13 @@ app.post(
 );
 
 app.put(
-    "/api/questions/:questionId",
-    authenticateUser,
-    authorizationUser(["admin"]),
-    checkSchema(questionIdValidation),checkSchema(questionValidation),
-    questionsCltr.update
-  );
+  "/api/questions/:questionId",
+  authenticateUser,
+  authorizationUser(["admin"]),
+  checkSchema(questionIdValidation),
+  checkSchema(questionValidation),
+  questionsCltr.update
+);
 
 app.delete(
   "/api/questions/:questionId",
@@ -81,7 +85,28 @@ app.delete(
   questionsCltr.remove
 );
 
+// api for Quiz
 
+app.post(
+  "/api/quizzes",
+  authenticateUser,
+  authorizationUser(["admin"]),
+  checkSchema(quizValidation),
+  quizCltr.create
+);
+
+app.get(
+  "/api/quizzes",
+  authenticateUser,
+  authorizationUser(["admin", "user"]),
+  quizCltr.list
+);
+app.get(
+    "/api/quizzes/:quizId",
+    authenticateUser,
+    authorizationUser(["admin", "user"]),
+    quizCltr.list
+  );
 
 app.listen(port, () => {
   console.log("server running in port", port);

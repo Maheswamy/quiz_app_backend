@@ -41,6 +41,9 @@ questionsCltr.create = async (req, res) => {
 questionsCltr.read = async (req, res) => {
   try {
     const allQuestions = await Question.find();
+    if (!allQuestions) {
+      return res.status(404).json({ errors: "question not exists" });
+    }
     res.json(allQuestions);
   } catch (e) {
     res.status(500).json(e);
@@ -56,6 +59,9 @@ questionsCltr.readOne = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
     const question = await Question.findById(id);
+    if (!question) {
+      return res.status(404).json({ errors: "question not exists" });
+    }
     res.json(question);
   } catch (e) {
     res.status(500).json(e);
@@ -91,6 +97,7 @@ questionsCltr.update = async (req, res) => {
       new: true,
       runValidation: true,
     });
+
     res.json({ updatedQuestion });
   } catch (e) {
     res.status(500).json(e);
@@ -98,13 +105,16 @@ questionsCltr.update = async (req, res) => {
 };
 
 questionsCltr.remove = async (req, res) => {
-  const id = req.params.id;
+  const id = req.params.questionId;
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
     const removeQuestion = await Question.findByIdAndDelete(id);
+    if (!removeQuestion) {
+      return res.status(404).json({ error: "question not exists" });
+    }
     res.json(removeQuestion);
   } catch (e) {
     res.status(500).json(e);

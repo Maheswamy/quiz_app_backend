@@ -4,13 +4,13 @@ const authenticateUser = (req, res, next) => {
   try {
     const token = req.headers.authorization;
     if (!token) {
-      throw new Error("invalid token");
+      res.status(400).json({ error: "token not found" });
     }
     const tokenData = jwt.verify(token, process.env.SECRET_KEY);
     req.user = tokenData;
     next();
   } catch (e) {
-    throw new Error("invalid token ");
+    res.status(400).json({ error: "invalid token" });
   }
 };
 
@@ -27,4 +27,4 @@ const authorizationUser = (role) => {
   };
 };
 
-module.exports = { authenticateUser ,authorizationUser};
+module.exports = { authenticateUser, authorizationUser };
