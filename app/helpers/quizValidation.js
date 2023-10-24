@@ -18,7 +18,7 @@ const { isMongoId } = require("validator");
 const title = {
   notEmpty: {
     errorMessage: "title is required",
-    bail:true
+    bail: true,
   },
   isLength: {
     options: {
@@ -31,7 +31,7 @@ const title = {
 const startDate = {
   notEmpty: {
     errorMessage: "Start Date is required",
-    bail:true
+    bail: true,
   },
   isDate: {
     errorMessage: "invalid date format",
@@ -41,7 +41,7 @@ const startDate = {
 const endDate = {
   notEmpty: {
     errorMessage: "End Date is required",
-    bail:true
+    bail: true,
   },
   isDate: {
     errorMessage: "invalid date format",
@@ -63,7 +63,7 @@ const questions = {
       min: 1,
     },
     errorMessage: "alteast one question should be present in quiz",
-    bail:true
+    bail: true,
   },
   custom: {
     options: async (value) => {
@@ -96,4 +96,17 @@ const quizValidation = {
   questions,
 };
 
-module.exports = { quizValidation };
+const quizIdvalidation = {
+  quizId: {
+    in: ["params"],
+    notEmpty: {
+      errorMessage: "poll id is required",
+      bail:true
+    },
+    isMongoId: {
+      errorMessage: "should be a valid id",
+    },
+  },
+};
+
+module.exports = { quizValidation, quizIdvalidation };
