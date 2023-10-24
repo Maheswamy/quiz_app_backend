@@ -13,6 +13,11 @@ const {
   authenticateUser,
   authorizationUser,
 } = require("./app/middleware/authenticateUser");
+const questionsCltr = require("./app/controllers/questionsCltr");
+const {
+  questionValidation,
+  questionIdValidation,
+} = require("./app/helpers/questionValidation");
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -35,6 +40,48 @@ app.get(
   authorizationUser(["admin", "user"]),
   usersCltr.account
 );
+
+// question end point
+
+app.get(
+  "/api/questions",
+  authenticateUser,
+  authorizationUser(["admin", "user"]),
+  questionsCltr.read
+);
+
+app.get(
+    "/api/questions/:questionId",
+  authenticateUser,
+  authorizationUser(["admin", "user"]),
+  checkSchema(questionIdValidation),
+  questionsCltr.readOne)
+
+app.post(
+  "/api/questions",
+  authenticateUser,
+  authorizationUser(["admin"]),
+  checkSchema(questionValidation),
+  questionsCltr.create
+);
+
+app.put(
+    "/api/questions/:questionId",
+    authenticateUser,
+    authorizationUser(["admin"]),
+    checkSchema(questionIdValidation),checkSchema(questionValidation),
+    questionsCltr.update
+  );
+
+app.delete(
+  "/api/questions/:questionId",
+  authenticateUser,
+  authorizationUser(["admin"]),
+  checkSchema(questionIdValidation),
+  questionsCltr.remove
+);
+
+
 
 app.listen(port, () => {
   console.log("server running in port", port);
